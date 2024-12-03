@@ -1,4 +1,5 @@
 from models.category import Category
+from models.question import Question
 
 
 
@@ -24,8 +25,6 @@ cat2 = Category(name="History")
 cat2.save()
 print(f"Category saved with ID: {cat2.id}")
 
-from models.question import Question
-
 print("Starting Question table test...")
 
 # Step 1: Create the questions table
@@ -33,7 +32,6 @@ print("Creating questions table...")
 Question.create_table()
 print("Questions table created successfully!")
 
-from models.question import Question
 
 print("Testing the save method for Question...")
 
@@ -72,7 +70,6 @@ all_questions = Question.all()
 for question in all_questions:
     print(f"ID: {question.id}, Text: {question.question_text}, Answer: {question.correct_answer}, Category ID: {question.category_id}")
 
-from models.category import Category
 
 # Add Math category
 math_category = Category(name="Math")
@@ -85,7 +82,6 @@ all_categories = Category.all()
 for category in all_categories:
     print(f"ID: {category.id}, Name: {category.name}")
 
-from models.question import Question
 
 # Questions for Science
 science_questions = [
@@ -139,8 +135,6 @@ for question_data in science_questions + math_questions + history_questions:
     question.save()
 
 print("All questions added successfully.")
-
-from models.question import Question
 
 print("Fetching all questions...")
 all_questions = Question.all()
