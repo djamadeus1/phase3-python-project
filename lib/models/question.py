@@ -1,13 +1,6 @@
-import sqlite3
 import random
-import sys
-sys.path.append("..")  # Add the parent directory to the Python path
-from lib.models.category import Category
-
-
-# Connect to the database
-CONN = sqlite3.connect("trivia.db")
-CURSOR = CONN.cursor()
+from .category import Category  # Relative import
+from . import CONN, CURSOR  # Import shared connection and cursor
 
 
 class Question:
@@ -38,7 +31,6 @@ class Question:
     def save(self):
         """Insert the current instance into the database."""
         try:
-            # Strip any existing prefixes (e.g., "A)") from the correct answer
             sanitized_correct_answer = self.correct_answer.split(") ", 1)[-1].strip()
 
             CURSOR.execute(
@@ -48,18 +40,17 @@ class Question:
                 """,
                 (self.question_text, sanitized_correct_answer, self.category_id),
             )
-            CONN.commit()  # Commit the changes
-            self.id = CURSOR.lastrowid  # Get the auto-generated ID
+            CONN.commit()
+            self.id = CURSOR.lastrowid
         except Exception as e:
             print(f"Error saving question: {e}")
-
 
     @classmethod
     def all(cls):
         """Fetch all questions from the database."""
         try:
             CURSOR.execute("SELECT * FROM questions;")
-            rows = CURSOR.fetchall()  # Use fetchall to get all rows
+            rows = CURSOR.fetchall()
             return [
                 cls(
                     id=row[0],
@@ -112,7 +103,7 @@ class Question:
         """Delete the current question from the database."""
         try:
             CURSOR.execute("DELETE FROM questions WHERE id = ?;", (self.id,))
-            CONN.commit()  # Commit the deletion
+            CONN.commit()
             print(f"Question with ID {self.id} has been deleted.")
         except Exception as e:
             print(f"Error deleting question: {e}")
@@ -126,7 +117,7 @@ class Question:
 
         # Combine correct and incorrect answers
         all_choices = incorrect_answers + [sanitized_correct_answer]
-        random.shuffle(all_choices)  # Shuffle to randomize positions
+        random.shuffle(all_choices)
 
         # Return choices with letters
         choices_with_letters = {letter: choice for letter, choice in zip("ABCD", all_choices)}
@@ -138,7 +129,7 @@ class Question:
             return [
                 "100 miles", "1,000 miles", "10,000 miles"
             ]
-        elif self.correct_answer.isdigit():  # Numbers
+        elif self.correct_answer.isdigit():
             correct_value = int(self.correct_answer)
             return [str(correct_value + random.randint(-10, 10)) for _ in range(3)]
         elif "million" in self.correct_answer:

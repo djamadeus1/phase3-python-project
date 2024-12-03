@@ -1,4 +1,5 @@
 import sqlite3
 
-CONN = sqlite3.connect('company.db')
+# Centralize database connection
+CONN = sqlite3.connect("lib/trivia.db")
 CURSOR = CONN.cursor()
