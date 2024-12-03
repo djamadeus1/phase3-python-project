@@ -1,9 +1,4 @@
-import sqlite3
-
-# Database connection
-CONN = sqlite3.connect("trivia.db")  # Connect to the database (creates it if it doesn't exist)
-CURSOR = CONN.cursor()  # Create a cursor for executing SQL commands
-
+from models.__init__ import CURSOR,CONN
 
 class Category:
     def __init__(self, name, id=None):
