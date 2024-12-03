@@ -1,0 +1,40 @@
+<mxfile host="65bd71144e">
+    <diagram id="boIMtAY0Y0ile5MUHkA0" name="Page-1">
+        <mxGraphModel dx="557" dy="1045" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="2" value="Table Category" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="210" y="70" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="3" value="id Integer" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="140" y="160" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="4" value="Name" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="280" y="160" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="5" value="Table Questions" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="220" y="410" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="7" value="id integer [primary key]" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="150" y="500" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="8" value="text varchar" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="300" y="500" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="9" value="option varchar" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="150" y="580" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="10" value="options vachar" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="300" y="580" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="11" value="correct_answer Varchar" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="150" y="660" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="12" value="category id" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="300" y="660" width="120" height="60" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>
