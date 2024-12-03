@@ -1,13 +1,8 @@
-import sqlite3
 import random
 import sys
 sys.path.append("..")  # Add the parent directory to the Python path
-from lib.models.category import Category
-
-
-# Connect to the database
-CONN = sqlite3.connect("trivia.db")
-CURSOR = CONN.cursor()
+from models.category import Category
+from models.__init__ import CURSOR,CONN
 
 
 class Question:

@@ -1,7 +1,7 @@
 import sys
 sys.path.append(".")
-from lib.models.category import Category
-from lib.models.question import Question
+from models.category import Category
+from models.question import Question
 
 
 def main():
