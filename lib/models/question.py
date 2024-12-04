@@ -4,13 +4,36 @@ sys.path.append("..")  # Add the parent directory to the Python path
 from models.category import Category
 from models.__init__ import CURSOR,CONN
 
-
 class Question:
     def __init__(self, question_text, correct_answer, category_id, id=None):
         self.id = id
-        self.question_text = question_text
-        self.correct_answer = correct_answer
+        self._question_text = question_text
+        self._correct_answer = correct_answer
         self.category_id = category_id
+
+    @property
+    def question_text(self):
+        """Getter for question text."""
+        return self._question_text
+
+    @question_text.setter
+    def question_text(self, value):
+        """Setter for question text with validation."""
+        if not value.strip() or len(value) < 5:
+            raise ValueError("Question text must be at least 5 characters long.")
+        self._question_text = value
+
+    @property
+    def correct_answer(self):
+        """Getter for correct answer."""
+        return self._correct_answer
+
+    @correct_answer.setter
+    def correct_answer(self, value):
+        """Setter for correct answer with validation."""
+        if not value.strip():
+            raise ValueError("Correct answer cannot be empty.")
+        self._correct_answer = value
 
     @classmethod
     def create_table(cls):
@@ -33,28 +56,24 @@ class Question:
     def save(self):
         """Insert the current instance into the database."""
         try:
-            # Strip any existing prefixes (e.g., "A)") from the correct answer
-            sanitized_correct_answer = self.correct_answer.split(") ", 1)[-1].strip()
-
             CURSOR.execute(
                 """
                 INSERT INTO questions (question_text, correct_answer, category_id)
                 VALUES (?, ?, ?);
                 """,
-                (self.question_text, sanitized_correct_answer, self.category_id),
+                (self._question_text, self._correct_answer, self.category_id),
             )
-            CONN.commit()  # Commit the changes
-            self.id = CURSOR.lastrowid  # Get the auto-generated ID
+            CONN.commit()
+            self.id = CURSOR.lastrowid
         except Exception as e:
             print(f"Error saving question: {e}")
-
 
     @classmethod
     def all(cls):
         """Fetch all questions from the database."""
         try:
             CURSOR.execute("SELECT * FROM questions;")
-            rows = CURSOR.fetchall()  # Use fetchall to get all rows
+            rows = CURSOR.fetchall()
             return [
                 cls(
                     id=row[0],
@@ -66,25 +85,6 @@ class Question:
         except Exception as e:
             print(f"Error fetching all questions: {e}")
             return []
-
-    @classmethod
-    def find_by_category(cls, category_id):
-        """Fetch one question from a specific category."""
-        try:
-            CURSOR.execute(
-                "SELECT * FROM questions WHERE category_id = ? LIMIT 1;", (category_id,)
-            )
-            row = CURSOR.fetchone()
-            if row:
-                return cls(
-                    id=row[0],
-                    question_text=row[1],
-                    correct_answer=row[2],
-                    category_id=row[3]
-                )
-        except Exception as e:
-            print(f"Error finding question by category: {e}")
-        return None
 
     @classmethod
     def find_by_id(cls, id):
@@ -103,11 +103,36 @@ class Question:
             print(f"Error finding question by ID: {e}")
         return None
 
+    @classmethod
+    def find_random_by_category(cls, category_id, exclude_ids=set()):
+        """Fetch a random question from a specific category, excluding already asked questions."""
+        try:
+            placeholders = ', '.join('?' for _ in exclude_ids)
+            query = f"""
+                SELECT * FROM questions
+                WHERE category_id = ? {f"AND id NOT IN ({placeholders})" if exclude_ids else ""}
+                ORDER BY RANDOM()
+                LIMIT 1;
+            """
+            params = (category_id, *exclude_ids) if exclude_ids else (category_id,)
+            CURSOR.execute(query, params)
+            row = CURSOR.fetchone()
+            if row:
+                return cls(
+                    id=row[0],
+                    question_text=row[1],
+                    correct_answer=row[2],
+                    category_id=row[3]
+                )
+        except Exception as e:
+            print(f"Error finding random question by category: {e}")
+        return None
+
     def delete(self):
         """Delete the current question from the database."""
         try:
             CURSOR.execute("DELETE FROM questions WHERE id = ?;", (self.id,))
-            CONN.commit()  # Commit the deletion
+            CONN.commit()
             print(f"Question with ID {self.id} has been deleted.")
         except Exception as e:
             print(f"Error deleting question: {e}")
@@ -121,7 +146,7 @@ class Question:
 
         # Combine correct and incorrect answers
         all_choices = incorrect_answers + [sanitized_correct_answer]
-        random.shuffle(all_choices)  # Shuffle to randomize positions
+        random.shuffle(all_choices)
 
         # Return choices with letters
         choices_with_letters = {letter: choice for letter, choice in zip("ABCD", all_choices)}
@@ -133,7 +158,7 @@ class Question:
             return [
                 "100 miles", "1,000 miles", "10,000 miles"
             ]
-        elif self.correct_answer.isdigit():  # Numbers
+        elif self.correct_answer.isdigit():
             correct_value = int(self.correct_answer)
             return [str(correct_value + random.randint(-10, 10)) for _ in range(3)]
         elif "million" in self.correct_answer:
