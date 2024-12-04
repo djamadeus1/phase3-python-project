@@ -13,9 +13,33 @@ CURSOR = CONN.cursor()
 class Question:
     def __init__(self, question_text, correct_answer, category_id, id=None):
         self.id = id
-        self.question_text = question_text
-        self.correct_answer = correct_answer
+        self._question_text = question_text
+        self._correct_answer = correct_answer
         self.category_id = category_id
+
+    @property
+    def question_text(self):
+        """Getter for question text."""
+        return self._question_text
+
+    @question_text.setter
+    def question_text(self, value):
+        """Setter for question text with validation."""
+        if not value.strip() or len(value) < 5:
+            raise ValueError("Question text must be at least 5 characters long.")
+        self._question_text = value
+
+    @property
+    def correct_answer(self):
+        """Getter for correct answer."""
+        return self._correct_answer
+
+    @correct_answer.setter
+    def correct_answer(self, value):
+        """Setter for correct answer with validation."""
+        if not value.strip():
+            raise ValueError("Correct answer cannot be empty.")
+        self._correct_answer = value
 
     @classmethod
     def create_table(cls):
@@ -38,14 +62,12 @@ class Question:
     def save(self):
         """Insert the current instance into the database."""
         try:
-            sanitized_correct_answer = self.correct_answer.strip()
-
             CURSOR.execute(
                 """
                 INSERT INTO questions (question_text, correct_answer, category_id)
                 VALUES (?, ?, ?);
                 """,
-                (self.question_text, sanitized_correct_answer, self.category_id),
+                (self._question_text, self._correct_answer, self.category_id),
             )
             CONN.commit()
             self.id = CURSOR.lastrowid
@@ -71,12 +93,10 @@ class Question:
             return []
 
     @classmethod
-    def find_by_category(cls, category_id):
-        """Fetch one question from a specific category."""
+    def find_by_id(cls, id):
+        """Find a question by its ID."""
         try:
-            CURSOR.execute(
-                "SELECT * FROM questions WHERE category_id = ? LIMIT 1;", (category_id,)
-            )
+            CURSOR.execute("SELECT * FROM questions WHERE id = ?;", (id,))
             row = CURSOR.fetchone()
             if row:
                 return cls(
@@ -86,7 +106,7 @@ class Question:
                     category_id=row[3]
                 )
         except Exception as e:
-            print(f"Error finding question by category: {e}")
+            print(f"Error finding question by ID: {e}")
         return None
 
     @classmethod
@@ -112,23 +132,6 @@ class Question:
                 )
         except Exception as e:
             print(f"Error finding random question by category: {e}")
-        return None
-
-    @classmethod
-    def find_by_id(cls, id):
-        """Find a question by its ID."""
-        try:
-            CURSOR.execute("SELECT * FROM questions WHERE id = ?;", (id,))
-            row = CURSOR.fetchone()
-            if row:
-                return cls(
-                    id=row[0],
-                    question_text=row[1],
-                    correct_answer=row[2],
-                    category_id=row[3]
-                )
-        except Exception as e:
-            print(f"Error finding question by ID: {e}")
         return None
 
     def delete(self):
