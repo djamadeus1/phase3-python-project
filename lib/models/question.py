@@ -1,14 +1,8 @@
-import sqlite3
-import random  
-import os
-from .category import Category  
-
-# Define the database path
-DB_PATH = os.path.join("lib", "trivia.db") 
-
-# Initialize the database connection
-CONN = sqlite3.connect(DB_PATH)
-CURSOR = CONN.cursor()
+import random
+import sys
+sys.path.append("..")  # Add the parent directory to the Python path
+from models.category import Category
+from models.__init__ import CURSOR,CONN
 
 class Question:
     def __init__(self, question_text, correct_answer, category_id, id=None):

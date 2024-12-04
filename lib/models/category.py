@@ -1,10 +1,5 @@
-import sqlite3
-import os
+from models.__init__ import CURSOR,CONN
 
-DB_PATH = os.path.join("lib", "trivia.db") 
-
-CONN = sqlite3.connect(DB_PATH)
-CURSOR = CONN.cursor()
 
 class Category:
     def __init__(self, name, id=None):

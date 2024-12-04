@@ -87,4 +87,3 @@ if __name__ == "__main__":
 
 if __name__ == "__main__":
     reset_trivia_database()
-
