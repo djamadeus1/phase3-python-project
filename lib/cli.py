@@ -1,5 +1,7 @@
+import os
 import sys
-sys.path.append(".")
+sys.path.append("lib")  # Adjust path to include the `lib` folder
+
 from models.category import Category
 from models.question import Question
 
@@ -73,3 +75,4 @@ def play_question():
 
 if __name__ == "__main__":
     main()
+

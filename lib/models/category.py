@@ -1,7 +1,10 @@
 import sqlite3
+import os
 
-# Database connection
-CONN = sqlite3.connect("trivia.db")  # Connect to the database (creates it if it doesn't exist)
+DB_PATH = os.path.join("lib", "trivia.db")
+
+
+CONN = sqlite3.connect(DB_PATH)  # Connect to the database (creates it if it doesn't exist)
 CURSOR = CONN.cursor()  # Create a cursor for executing SQL commands
 
 

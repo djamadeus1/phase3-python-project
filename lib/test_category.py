@@ -1,6 +1,30 @@
 from models.category import Category
 from models.question import Question
+from models.__init__ import CONN, CURSOR
 
+def reset_trivia_database():
+    """Reset the trivia database and repopulate it with correct data."""
+    print("Resetting the trivia database...")
+    
+    # Drop the tables
+    CURSOR.execute("DROP TABLE IF EXISTS questions;")
+    CURSOR.execute("DROP TABLE IF EXISTS categories;")
+    
+    # Recreate the tables
+    Category.create_table()
+    Question.create_table()
+    
+    # Repopulate the database
+    print("Repopulating categories...")
+    for category_name in ["Science", "History", "Math"]:
+        new_category = Category(name=category_name)
+        new_category.save()
+    
+    print("Repopulating questions...")
+    update_questions_in_db()
+
+    CONN.commit()
+    print("Trivia database reset and repopulated.")
 
 def update_questions_in_db():
     """Ensure the database contains the latest question data."""
@@ -46,43 +70,21 @@ def update_questions_in_db():
     ]
 
     all_questions = science_questions + math_questions + history_questions
-    existing_questions = Question.all()
+    added_count = 0
 
-    # Check if database matches the predefined questions
     for question_data in all_questions:
-        found = False
-        for question in existing_questions:
-            if (
-                question.question_text == question_data["text"]
-                and question.correct_answer == question_data["answer"]
-                and question.category_id == question_data["category_id"]
-            ):
-                found = True
-                break
-        if not found:
-            # Add the missing question
-            print(f"Adding missing question: {question_data['text']}")
-            new_question = Question(
-                question_text=question_data["text"],
-                correct_answer=question_data["answer"],
-                category_id=question_data["category_id"],
-            )
-            new_question.save()
+        Question(
+            question_text=question_data["text"],
+            correct_answer=question_data["answer"],
+            category_id=question_data["category_id"],
+        ).save()
+        added_count += 1
 
+    print(f"Added {added_count} questions.")
 
-# Add categories and questions
-print("Starting tests...")
+if __name__ == "__main__":
+    reset_trivia_database()
 
-# Ensure categories exist
-print("Ensuring categories are up to date...")
-Category.create_table()
-for category_name in ["Science", "History", "Math"]:
-    if not any(cat.name == category_name for cat in Category.all()):
-        new_category = Category(name=category_name)
-        new_category.save()
-        print(f"Added category: {category_name}")
+if __name__ == "__main__":
+    reset_trivia_database()
 
-# Ensure questions are up to date
-update_questions_in_db()
-
-print("All categories and questions are up to date.")

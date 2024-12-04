@@ -1,6 +1,15 @@
-import random
-from .category import Category  # Relative import
-from . import CONN, CURSOR  # Import shared connection and cursor
+import sqlite3
+import random  
+import os
+from .category import Category  
+
+# Define the database path
+DB_PATH = os.path.join("lib", "trivia.db") 
+
+# Initialize the database connection
+CONN = sqlite3.connect(DB_PATH)
+CURSOR = CONN.cursor()
+
 
 
 class Question:
@@ -31,7 +40,7 @@ class Question:
     def save(self):
         """Insert the current instance into the database."""
         try:
-            sanitized_correct_answer = self.correct_answer.split(") ", 1)[-1].strip()
+            sanitized_correct_answer = self.correct_answer.strip()
 
             CURSOR.execute(
                 """
