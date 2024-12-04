@@ -154,14 +154,39 @@ class Question:
 
     def get_plausible_wrong_answers(self):
         """Generate plausible wrong answers based on the correct answer."""
-        if "miles" in self.correct_answer:
+        # Context-specific datasets
+        cell_components = ["Nucleus", "Ribosome", "Golgi Apparatus", "Lysosome", "Endoplasmic Reticulum"]
+        elements = ["Oxygen", "Silicon", "Aluminum", "Iron", "Calcium", "Sodium", "Potassium", "Magnesium"]
+        chemical_symbols = ["H₂O", "CO₂", "O₂", "N₂", "H₂", "CH₄", "NaCl", "H₂O₂"]
+        planets = ["Mars", "Venus", "Jupiter", "Saturn", "Mercury", "Uranus", "Neptune"]
+
+        # Determine the type of correct answer and generate wrong answers
+        if self.correct_answer in cell_components or self.correct_answer == "Mitochondrion":
+            # Cell components - Exclude correct answer
+            wrong_answers = [component for component in cell_components if component != self.correct_answer]
+            return random.sample(wrong_answers, min(3, len(wrong_answers)))
+
+        elif self.correct_answer in chemical_symbols:
+            wrong_answers = [symbol for symbol in chemical_symbols if symbol != self.correct_answer]
+            return random.sample(wrong_answers, min(3, len(wrong_answers)))
+
+        elif self.correct_answer in elements:
+            wrong_answers = [element for element in elements if element != self.correct_answer]
+            return random.sample(wrong_answers, min(3, len(wrong_answers)))
+
+        elif self.correct_answer in planets:
+            wrong_answers = [planet for planet in planets if planet != self.correct_answer]
+            return random.sample(wrong_answers, min(3, len(wrong_answers)))
+
+        elif len(self.correct_answer.split()) > 1:
+            words = self.correct_answer.split()
             return [
-                "100 miles", "1,000 miles", "10,000 miles"
+                " ".join(words[:-1] + ["Incorrect"]),
+                "Incorrect " + " ".join(words[1:]),
+                "Alternative " + " ".join(words)
             ]
-        elif self.correct_answer.isdigit():
-            correct_value = int(self.correct_answer)
-            return [str(correct_value + random.randint(-10, 10)) for _ in range(3)]
-        elif "million" in self.correct_answer:
-            return ["1 million", "10 million", "100 million"]
+
         else:
-            return ["Choice 1", "Choice 2", "Choice 3"]
+            return ["Choice A", "Choice B", "Choice C"]
+
+

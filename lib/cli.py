@@ -43,15 +43,24 @@ def play_question():
     wrong_count = 0
 
     try:
-        category_id = input("\nEnter the category ID to play: ")
+        # Select a category
+        category_id = input("\nEnter the category ID to play: ").strip()
+        if not category_id.isdigit():
+            print("Invalid category ID. Please enter a number.")
+            return
+
+        category_id = int(category_id)
         asked_questions = set()
 
         while True:
-            question = Question.find_random_by_category(int(category_id), exclude_ids=asked_questions)
+            # Fetch a random question from the category, excluding already asked ones
+            question = Question.find_random_by_category(category_id, exclude_ids=asked_questions)
 
             if not question:
-                print("No more questions available in this category.")
-                break
+                # Reset asked_questions to loop through the questions again
+                print("You've answered all questions in this category. Starting over...")
+                asked_questions.clear()
+                continue
 
             asked_questions.add(question.id)
 
@@ -63,7 +72,11 @@ def play_question():
             for letter, choice in choices.items():
                 print(f"{letter}) {choice}")
 
-            user_answer = input("\nChoose answer (A/B/C/D)\nor type 'exit' to go back to quit: ").strip().upper()
+            # Add a blank line for better readability
+            print()
+
+            # Ask the user for their answer
+            user_answer = input("Choose answer (A/B/C/D)\nor type 'exit' to go back to quit: ").strip().upper()
 
             if user_answer.lower() == "exit":
                 print("Exiting category. Returning to main menu.")
@@ -79,16 +92,19 @@ def play_question():
                 return
 
             if user_answer == correct_letter:
-                print(f"Correct! {correct_letter}: {question.correct_answer.strip()}")
+                print(f"\nCorrect! {correct_letter}: {question.correct_answer.strip()}")
                 correct_count += 1
             else:
-                print(f"Wrong! The correct answer is: {correct_letter}) {question.correct_answer.strip()}")
+                print(f"\nWrong! The correct answer is: {correct_letter}) {question.correct_answer.strip()}")
                 wrong_count += 1
 
+            # Show the current score
             print(f"Current Score: {correct_count} Correct, {wrong_count} Wrong")
+            print()  # Add a blank line for better readability
 
     except ValueError:
         print("Invalid category ID. Please enter a number.")
+
 
 
 def add_question():
