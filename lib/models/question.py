@@ -10,8 +10,6 @@ DB_PATH = os.path.join("lib", "trivia.db")
 CONN = sqlite3.connect(DB_PATH)
 CURSOR = CONN.cursor()
 
-
-
 class Question:
     def __init__(self, question_text, correct_answer, category_id, id=None):
         self.id = id
@@ -89,6 +87,31 @@ class Question:
                 )
         except Exception as e:
             print(f"Error finding question by category: {e}")
+        return None
+
+    @classmethod
+    def find_random_by_category(cls, category_id, exclude_ids=set()):
+        """Fetch a random question from a specific category, excluding already asked questions."""
+        try:
+            placeholders = ', '.join('?' for _ in exclude_ids)
+            query = f"""
+                SELECT * FROM questions
+                WHERE category_id = ? {f"AND id NOT IN ({placeholders})" if exclude_ids else ""}
+                ORDER BY RANDOM()
+                LIMIT 1;
+            """
+            params = (category_id, *exclude_ids) if exclude_ids else (category_id,)
+            CURSOR.execute(query, params)
+            row = CURSOR.fetchone()
+            if row:
+                return cls(
+                    id=row[0],
+                    question_text=row[1],
+                    correct_answer=row[2],
+                    category_id=row[3]
+                )
+        except Exception as e:
+            print(f"Error finding random question by category: {e}")
         return None
 
     @classmethod

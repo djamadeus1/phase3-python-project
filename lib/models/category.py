@@ -84,3 +84,15 @@ class Category:
             CONN.commit()  # Commit the deletion
         except Exception as e:
             print(f"Error deleting category: {e}")
+
+    @classmethod
+    def find_by_id(cls, id):
+        """Find a category by its ID."""
+        try:
+            CURSOR.execute("SELECT * FROM categories WHERE id = ?;", (id,))
+            row = CURSOR.fetchone()
+            if row:
+                return cls(id=row[0], name=row[1])
+        except Exception as e:
+            print(f"Error finding category by ID: {e}")
+        return None
