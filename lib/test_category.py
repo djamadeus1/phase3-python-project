@@ -6,15 +6,12 @@ def reset_trivia_database():
     """Reset the trivia database and repopulate it with correct data."""
     print("Resetting the trivia database...")
     
-    # Drop the tables
     CURSOR.execute("DROP TABLE IF EXISTS questions;")
     CURSOR.execute("DROP TABLE IF EXISTS categories;")
     
-    # Recreate the tables
     Category.create_table()
     Question.create_table()
     
-    # Repopulate the database
     print("Repopulating categories...")
     for category_name in ["Science", "History", "Math"]:
         new_category = Category(name=category_name)
