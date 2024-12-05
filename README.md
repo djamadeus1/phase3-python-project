@@ -40,3 +40,8 @@ Main Menu Options:
 - Add additional questions and categories.
 - Add a leaderboard to track user scores over multiple sessions.
 - Implement timed questions for added challenge.
+
+## The Developers:
+- Ron Roberts
+- Karina Mogha
+- Casey Rayson
