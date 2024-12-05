@@ -1,5 +1,5 @@
 import sys
-sys.path.append("lib")  # Adjust path to include the `lib` folder
+sys.path.append("lib") 
 from models.category import Category
 from models.question import Question
 
